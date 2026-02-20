@@ -1,8 +1,8 @@
 # 🚀 Event-Based Status Monitor
 
-**Scalable to 100+ Providers with ZERO Polling**
+**Scalable to 100+ providers with webhooks**
 
-This system uses **webhooks** for true event-driven monitoring. No polling = instant notifications + efficient scaling.
+This system uses webhooks for event-driven monitoring. Providers push updates when incidents change.
 
 ---
 
@@ -17,8 +17,8 @@ Instant Processing & Output
 ```
 
 **Key Points:**
-- **Zero polling overhead** - No repeated API calls
-- **Instant notifications** - Real-time incident detection
+- **No polling** - Only webhook pushes
+- **Fast updates** - New incidents are processed on arrival
 - **Scales to 100+** - Single server handles all providers
 - **Event-driven** - Only processes when changes occur
 
@@ -45,7 +45,7 @@ python event_monitor.py --port 5000
 ======================================================================
 EVENT-BASED STATUS MONITOR
 ======================================================================
-Mode: Webhook-based (zero polling)
+Mode: Webhook-based (no polling)
 Listening on: 0.0.0.0:5000
 Webhook endpoint: http://0.0.0.0:5000/webhook/statuspage
 ======================================================================
@@ -77,8 +77,9 @@ Status: We are investigating elevated error rates affecting the Chat API
 ## 🧪 Test Locally
 
 ```bash
-# Test the webhook endpoint
-curl -X POST http://localhost:5000/test
+curl -X POST http://localhost:5000/webhook/statuspage \
+  -H "Content-Type: application/json" \
+  -d '{"incident":{"id":"local_test","name":"Chat Completions API - Elevated Error Rates","status":"investigating","updated_at":"2025-11-03T14:32:00Z","components":[{"name":"Chat Completions"}],"incident_updates":[{"body":"Degraded performance due to upstream issue"}]},"page":{"name":"OpenAI API"}}'
 ```
 
 ---
@@ -157,7 +158,6 @@ curl http://localhost:5000/health
 | `/webhook/statuspage` | POST | Receive webhooks from providers |
 | `/health` | GET | Health check |
 | `/incidents` | GET | List all received incidents |
-| `/test` | POST | Test webhook locally |
 
 ---
 
@@ -236,7 +236,7 @@ Status: We are investigating elevated error rates
 
 ## 🎉 Ready to Deploy!
 
-The event-based architecture is complete and production-ready. No polling, instant notifications, scales to 100+ providers effortlessly.
+The event-based architecture is complete and production-ready. It scales to 100+ providers with webhook pushes.
 
 **Start the server:**
 ```bash

@@ -12,7 +12,9 @@ python event_monitor.py --port 5000
 Test locally:
 
 ```bash
-curl -X POST http://localhost:5000/test
+curl -X POST http://localhost:5000/webhook/statuspage \
+   -H "Content-Type: application/json" \
+   -d '{"incident":{"id":"local_test","name":"Chat Completions API - Elevated Error Rates","status":"investigating","updated_at":"2025-11-03T14:32:00Z","components":[{"name":"Chat Completions"}],"incident_updates":[{"body":"Degraded performance due to upstream issue"}]},"page":{"name":"OpenAI API"}}'
 curl http://localhost:5000/health
 ```
 
@@ -61,14 +63,16 @@ If you do not have access, use Postman to simulate webhook payloads. See [POSTMA
 
 ```bash
 curl https://your-app.onrender.com/health
-curl -X POST https://your-app.onrender.com/test
+curl -X POST https://your-app.onrender.com/webhook/statuspage \
+   -H "Content-Type: application/json" \
+   -d '{"incident":{"id":"live_test","name":"Chat Completions API - Elevated Error Rates","status":"investigating","updated_at":"2025-11-03T14:32:00Z","components":[{"name":"Chat Completions"}],"incident_updates":[{"body":"Degraded performance due to upstream issue"}]},"page":{"name":"OpenAI API"}}'
 ```
 
 Expected server log output:
 
 ```
-[2026-02-20 14:32:00] Product: OpenAI API - Test Service
-Status: This is a test webhook to verify the system is working
+[2025-11-03 14:32:00] Product: OpenAI API - Chat Completions
+Status: Degraded performance due to upstream issue
 ```
 
 ## Submission

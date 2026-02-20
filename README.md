@@ -26,7 +26,9 @@ python event_monitor.py --port 5000
 ### Test Locally
 
 ```bash
-curl -X POST http://localhost:5000/test
+curl -X POST http://localhost:5000/webhook/statuspage \
+	-H "Content-Type: application/json" \
+	-d '{"incident":{"id":"local_test","name":"Chat Completions API - Elevated Error Rates","status":"investigating","updated_at":"2025-11-03T14:32:00Z","components":[{"name":"Chat Completions"}],"incident_updates":[{"body":"Degraded performance due to upstream issue"}]},"page":{"name":"OpenAI API"}}'
 curl http://localhost:5000/health
 ```
 
@@ -56,7 +58,6 @@ Other endpoints:
 ```
 GET  /health
 GET  /incidents
-POST /test
 ```
 
 ## Scaling to 100+ Providers
@@ -76,7 +77,7 @@ Configuring webhooks on the OpenAI Status Page requires admin access. If you do 
 ## Troubleshooting
 
 **Q: No output in terminal**
-- A: Send a test webhook: `curl -X POST http://localhost:5000/test`
+- A: Send a webhook payload to `/webhook/statuspage`
 - A: Ensure the webhook payload has a new `updated_at` or unique `id`
 
 **Q: Webhook returns 400**

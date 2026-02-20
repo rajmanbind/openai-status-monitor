@@ -10,7 +10,6 @@ Your server is running on **http://localhost:5001** (check your terminal for the
 |--------|----------|---------|
 | GET | `/health` | Check server status |
 | GET | `/incidents` | List all received incidents |
-| POST | `/test` | Send test webhook (easiest to test) |
 | POST | `/webhook/statuspage` | Real webhook endpoint (production) |
 
 ---
@@ -41,46 +40,7 @@ Your server is running on **http://localhost:5001** (check your terminal for the
 
 ---
 
-## 🧪 Test 2: Test Webhook (Recommended)
-
-**Method:** `POST`  
-**URL:** `http://localhost:5001/test`  
-**Headers:** 
-```
-Content-Type: application/json
-```
-**Body:** None needed (or empty JSON `{}`)
-
-**Expected Response:**
-```json
-{
-  "status": "success"
-}
-```
-
-**Expected Terminal Output:**
-```
-[2026-02-20 02:17:38] Product: OpenAI API - Test Service
-Status: This is a test webhook to verify the system is working
-```
-
-**In Postman:**
-1. Create new request
-2. Set method to **POST**
-3. Enter URL: `http://localhost:5001/test`
-4. Go to **Headers** tab:
-   - Key: `Content-Type`
-   - Value: `application/json`
-5. Go to **Body** tab:
-   - Select **raw**
-   - Select **JSON** from dropdown
-   - Leave empty or enter `{}`
-6. Click **Send**
-7. Check your **terminal** for formatted output!
-
----
-
-## 📊 Test 3: List Incidents
+## 📊 Test 2: List Incidents
 
 **Method:** `GET`  
 **URL:** `http://localhost:5001/incidents`  
@@ -111,7 +71,7 @@ Status: This is a test webhook to verify the system is working
 
 ---
 
-## 🎯 Test 4: Real Webhook (Production Format)
+## 🎯 Test 3: Real Webhook (Production Format)
 
 **Method:** `POST`  
 **URL:** `http://localhost:5001/webhook/statuspage`  
@@ -180,7 +140,7 @@ Status: Degraded performance due to upstream issue
 
 ---
 
-## 🔥 Test 5: Multiple Services (Advanced)
+## 🔥 Test 4: Multiple Services (Advanced)
 
 **Method:** `POST`  
 **URL:** `http://localhost:5001/webhook/statuspage`  
@@ -237,19 +197,17 @@ Status: We have identified the issue and are working on a fix. Multiple services
 
 2. ✅ **Test Health** - Verify server is running
 
-3. ✅ **Test Simple Webhook** - Use `/test` endpoint
+3. ✅ **Test Real Webhook** - Send production-format JSON
 
 4. ✅ **Check Terminal** - See formatted output appear
 
-5. ✅ **Test Real Webhook** - Send production-format JSON
-
-6. ✅ **List Incidents** - Verify incidents were stored
+5. ✅ **List Incidents** - Verify incidents were stored
 
 ---
 
 ## 🎬 Postman Collection (Import This)
 
-Create a new collection in Postman and add these 4 requests:
+Create a new collection in Postman and add these 3 requests:
 
 **Collection Name:** OpenAI Status Monitor
 
@@ -258,21 +216,14 @@ Create a new collection in Postman and add these 4 requests:
 - **Method:** GET
 - **URL:** `http://localhost:5001/health`
 
-### Request 2: Test Webhook (Simple)
-- **Name:** Test Webhook
-- **Method:** POST
-- **URL:** `http://localhost:5001/test`
-- **Headers:** `Content-Type: application/json`
-- **Body:** `{}`
-
-### Request 3: Production Webhook
+### Request 2: Production Webhook
 - **Name:** Real Webhook - Chat API Issue
 - **Method:** POST
 - **URL:** `http://localhost:5001/webhook/statuspage`
 - **Headers:** `Content-Type: application/json`
-- **Body:** (Use the JSON from Test 4 above)
+- **Body:** (Use the JSON from Test 3 above)
 
-### Request 4: List Incidents
+### Request 3: List Incidents
 - **Name:** List All Incidents
 - **Method:** GET
 - **URL:** `http://localhost:5001/incidents`
@@ -300,7 +251,7 @@ Create a new collection in Postman and add these 4 requests:
 Your system is working correctly if:
 
 1. ✅ Health check returns status "running"
-2. ✅ POST to `/test` returns `{"status": "success"}`
+2. ✅ POST to `/webhook/statuspage` returns `{"status": "success", "incident_id": "...", "message": "Incident processed"}`
 3. ✅ **Terminal shows** formatted output like:
    ```
    [TIMESTAMP] Product: OpenAI API - Service
