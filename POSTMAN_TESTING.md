@@ -136,7 +136,7 @@ Status: Degraded performance due to upstream issue
    - Select **JSON** from dropdown
    - Paste the JSON above
 6. Click **Send**
-7. **Check your terminal - the formatted output appears there!**
+7. **Check the server logs (local terminal or Render Logs tab) for the formatted output.**
 
 ---
 
