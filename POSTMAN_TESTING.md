@@ -9,7 +9,6 @@ Your server is running on **http://localhost:5001** (check your terminal for the
 | Method | Endpoint | Purpose |
 |--------|----------|---------|
 | GET | `/health` | Check server status |
-| GET | `/incidents` | List all received incidents |
 | POST | `/webhook/statuspage` | Real webhook endpoint (production) |
 
 ---
@@ -40,38 +39,7 @@ Your server is running on **http://localhost:5001** (check your terminal for the
 
 ---
 
-## 📊 Test 2: List Incidents
-
-**Method:** `GET`  
-**URL:** `http://localhost:5001/incidents`  
-**Headers:** None needed
-
-**Expected Response:**
-```json
-{
-  "count": 1,
-  "incidents": [
-    {
-      "id": "test_20260220021738",
-      "name": "Test Incident - System Check",
-      "status": "investigating",
-      "components": ["Test Service"],
-      "latest_message": "This is a test webhook to verify the system is working",
-      "received_at": "2026-02-20T02:17:38.477890"
-    }
-  ]
-}
-```
-
-**In Postman:**
-1. Create new request
-2. Set method to **GET**
-3. Enter URL: `http://localhost:5001/incidents`
-4. Click **Send**
-
----
-
-## 🎯 Test 3: Real Webhook (Production Format)
+## 🎯 Test 2: Real Webhook (Production Format)
 
 **Method:** `POST`  
 **URL:** `http://localhost:5001/webhook/statuspage`  
@@ -140,7 +108,7 @@ Status: Degraded performance due to upstream issue
 
 ---
 
-## 🔥 Test 4: Multiple Services (Advanced)
+## 🔥 Test 3: Multiple Services (Advanced)
 
 **Method:** `POST`  
 **URL:** `http://localhost:5001/webhook/statuspage`  
@@ -201,13 +169,12 @@ Status: We have identified the issue and are working on a fix. Multiple services
 
 4. ✅ **Check Terminal** - See formatted output appear
 
-5. ✅ **List Incidents** - Verify incidents were stored
 
 ---
 
 ## 🎬 Postman Collection (Import This)
 
-Create a new collection in Postman and add these 3 requests:
+Create a new collection in Postman and add these 2 requests:
 
 **Collection Name:** OpenAI Status Monitor
 
@@ -221,12 +188,7 @@ Create a new collection in Postman and add these 3 requests:
 - **Method:** POST
 - **URL:** `http://localhost:5001/webhook/statuspage`
 - **Headers:** `Content-Type: application/json`
-- **Body:** (Use the JSON from Test 3 above)
-
-### Request 3: List Incidents
-- **Name:** List All Incidents
-- **Method:** GET
-- **URL:** `http://localhost:5001/incidents`
+- **Body:** (Use the JSON from Test 2 above)
 
 ---
 
@@ -257,6 +219,5 @@ Your system is working correctly if:
    [TIMESTAMP] Product: OpenAI API - Service
    Status: Message
    ```
-4. ✅ GET `/incidents` shows received webhooks
 
 **The terminal output is what matters most - that's what the assignment requires!**

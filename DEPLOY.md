@@ -37,16 +37,16 @@ docker run -p 5000:5000 event-monitor
    - Start Command: `python event_monitor.py --port $PORT --host 0.0.0.0`
    - Plan: Free
 
-Your webhook endpoint will be:
+Your webhook endpoint:
 
 ```
-https://your-app.onrender.com/webhook/statuspage
+https://openai-status-monitor.onrender.com/webhook/statuspage
 ```
 
 Health check:
 
 ```
-https://your-app.onrender.com/health
+https://openai-status-monitor.onrender.com/health
 ```
 
 ## Webhook Configuration
@@ -54,7 +54,7 @@ https://your-app.onrender.com/health
 If you have admin access to the Statuspage.io dashboard, configure a webhook to:
 
 ```
-https://your-app.onrender.com/webhook/statuspage
+https://openai-status-monitor.onrender.com/webhook/statuspage
 ```
 
 If you do not have access, use Postman to simulate webhook payloads. See [POSTMAN_TESTING.md](POSTMAN_TESTING.md).
@@ -62,8 +62,8 @@ If you do not have access, use Postman to simulate webhook payloads. See [POSTMA
 ## Verify Deployment
 
 ```bash
-curl https://your-app.onrender.com/health
-curl -X POST https://your-app.onrender.com/webhook/statuspage \
+curl https://openai-status-monitor.onrender.com/health
+curl -X POST https://openai-status-monitor.onrender.com/webhook/statuspage \
    -H "Content-Type: application/json" \
    -d '{"incident":{"id":"live_test","name":"Chat Completions API - Elevated Error Rates","status":"investigating","updated_at":"2025-11-03T14:32:00Z","components":[{"name":"Chat Completions"}],"incident_updates":[{"body":"Degraded performance due to upstream issue"}]},"page":{"name":"OpenAI API"}}'
 ```
@@ -80,6 +80,6 @@ Status: Degraded performance due to upstream issue
 Include in your email to be+submissions@bolna.ai:
 
 ```
-Webhook Endpoint: https://your-app.onrender.com/webhook/statuspage
-Health Check: https://your-app.onrender.com/health
+Webhook Endpoint: https://openai-status-monitor.onrender.com/webhook/statuspage
+Health Check: https://openai-status-monitor.onrender.com/health
 ```

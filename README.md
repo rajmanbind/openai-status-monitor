@@ -57,7 +57,6 @@ Other endpoints:
 
 ```
 GET  /health
-GET  /incidents
 ```
 
 ## Scaling to 100+ Providers
@@ -69,6 +68,12 @@ This design scales because providers push updates to one endpoint. No polling lo
 Render is the primary deployment target. See:
 
 - [DEPLOY.md](DEPLOY.md)
+
+Hosted URL:
+
+```
+https://openai-status-monitor.onrender.com
+```
 
 ## Notes on Webhook Configuration
 
@@ -104,3 +109,4 @@ This is a **production-ready, scalable solution** for monitoring status pages. I
 ✅ Efficient event-based detection (suitable for 100+ pages)
 ✅ Clean webhook-first architecture
 ✅ Simple console output for the assignment
+✅ Endpoints defined via `@app.route` decorators (minimal surface)
