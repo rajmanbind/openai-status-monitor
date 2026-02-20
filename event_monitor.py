@@ -1,23 +1,4 @@
-"""
-Event-Based Status Monitor - Scalable to 100+ Providers
-
-This is the main entry point for the webhook server.
-Uses webhooks (event-driven, no polling).
-
-Architecture:
-- Providers push updates via webhooks
-- Prints updates as incidents change
-- Scales to 100+ providers
-- Each provider sends webhook to: http://your-server:PORT/webhook/statuspage
-
-Usage:
-    python event_monitor.py                    # Start webhook server on port 5000
-    python event_monitor.py --port 8000        # Custom port
-
-For 100+ Providers:
-    Configure each provider's webhook to point to this server.
-    Each webhook call is processed instantly (true event-based).
-"""
+"""Event-based webhook server for OpenAI status incidents."""
 
 from flask import Flask, request, jsonify
 from datetime import datetime
@@ -34,24 +15,12 @@ recent_incidents: Dict = {}
 
 
 def create_incident_key(incident_id: str, updated_at: str) -> str:
-    """
-    Create unique key for incident to detect changes.
-    Use incident id + updated_at to dedupe webhook events.
-    """
+    """Create a unique incident key for dedupe."""
     return f"{incident_id}_{updated_at}"
 
 
 def parse_webhook_payload(payload: Dict) -> Dict:
-    """
-    Parse incoming webhook payload from Statuspage.io.
-    
-    Statuspage.io sends webhooks in this format:
-    {
-      "incident": {...},
-      "page": {"name": "OpenAI"},
-      "meta": {...}
-    }
-    """
+    """Parse incoming Statuspage webhook payload."""
     incident = payload.get("incident", {})
     page_name = payload.get("page", {}).get("name", "OpenAI API")
     
@@ -68,13 +37,7 @@ def parse_webhook_payload(payload: Dict) -> Dict:
 
 
 def format_output(incident: Dict) -> str:
-    """
-    Format incident output per assignment specification.
-    
-    Format:
-    [TIMESTAMP] Product: OpenAI API - SERVICE_NAME
-    Status: STATUS_MESSAGE
-    """
+    """Format incident output per assignment specification."""
     # Parse timestamp
     timestamp = incident["updated_at"][:19].replace("T", " ")
     
@@ -101,12 +64,7 @@ def format_output(incident: Dict) -> str:
 
 
 def is_new_incident(incident: Dict) -> bool:
-    """
-    Check if this is a new or updated incident (event-based deduplication).
-    
-    Returns True only if we haven't seen this exact incident+timestamp combination.
-    This ensures we only report actual CHANGES, not repeated webhook calls.
-    """
+    """Return True only for new or updated incidents."""
     incident_key = create_incident_key(incident["id"], incident["updated_at"])
     
     if incident_key in seen_incident_keys:
@@ -119,17 +77,7 @@ def is_new_incident(incident: Dict) -> bool:
 
 @app.route("/webhook/statuspage", methods=["POST"])
 def handle_statuspage_webhook():
-    """
-    PRIMARY ENDPOINT
-
-    Receives webhook pushes from Statuspage.io when incidents occur.
-    Event-based monitoring with webhooks.
-    
-    Statuspage.io calls this endpoint automatically when:
-    - New incident is created
-    - Existing incident is updated
-    - Incident is resolved
-    """
+    """Handle Statuspage incident webhooks."""
     try:
         payload = request.get_json()
         
@@ -188,40 +136,15 @@ def index():
         "health": "/health"
     }), 200
 
-
-@app.route("/incidents", methods=["GET"])
-def list_incidents():
-    """List all incidents received via webhooks."""
-    incidents_list = []
-    for incident_id, info in recent_incidents.items():
-        incidents_list.append({
-            "id": incident_id,
-            **info["data"],
-            "received_at": info["received_at"]
-        })
-    
-    return jsonify({
-        "count": len(incidents_list),
-        "incidents": incidents_list
-    }), 200
-
-
-
-
 def main():
-    """Main entry point for event-based monitoring."""
+    """Run the webhook server."""
     parser = argparse.ArgumentParser(
         description="Event-Based Status Monitor (Webhooks)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Event-Based Architecture (Scales to 100+ Providers):
 ────────────────────────────────────────────────────
-Setup:
-  1. Run this server: python event_monitor.py --port 5000
-  2. Configure each provider's webhook to: http://your-ip:5000/webhook/statuspage
-    3. Done! System is now event-driven
 
-For 100+ Providers:
   - Each provider sends webhooks to this single endpoint
   - Server handles them instantly as they arrive
     - No polling overhead
@@ -235,9 +158,8 @@ Test Locally:
 Examples:
   python event_monitor.py                    # Start on port 5000
   python event_monitor.py --port 8000        # Custom port
-  python event_monitor.py --host 0.0.0.0     # Accept external connections
-        """
-    )
+"""
+        )
     
     parser.add_argument(
         "--port",
