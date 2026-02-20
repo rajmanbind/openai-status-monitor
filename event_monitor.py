@@ -21,17 +21,9 @@ For 100+ Providers:
 
 from flask import Flask, request, jsonify
 from datetime import datetime
-import logging
 import argparse
 from typing import Dict, Set
 import json
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-)
-logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -141,7 +133,6 @@ def handle_statuspage_webhook():
         payload = request.get_json()
         
         if not payload:
-            logger.warning("Received empty webhook payload")
             return jsonify({"error": "No payload"}), 400
         
         # Parse the webhook data
@@ -149,7 +140,6 @@ def handle_statuspage_webhook():
         
         # Event-based deduplication: Only process NEW updates
         if not is_new_incident(incident):
-            logger.debug(f"Duplicate webhook for incident {incident['id']} - skipping")
             return jsonify({
                 "status": "duplicate",
                 "message": "Already processed this update"
@@ -164,7 +154,6 @@ def handle_statuspage_webhook():
         # Output in required format
         output = format_output(incident)
         print(f"\n{output}\n")
-        logger.info(f"[NEW] {incident['provider']} - {incident['name']} ({incident['status']})")
         
         return jsonify({
             "status": "success",
@@ -173,7 +162,6 @@ def handle_statuspage_webhook():
         }), 200
         
     except Exception as e:
-        logger.error(f"Error processing webhook: {e}")
         return jsonify({"error": str(e)}), 500
 
 
@@ -272,23 +260,6 @@ Examples:
     
     args = parser.parse_args()
     
-    logger.info("=" * 70)
-    logger.info("EVENT-BASED STATUS MONITOR")
-    logger.info("=" * 70)
-    logger.info(f"Mode: Webhook-based (no polling)")
-    logger.info(f"Listening on: {args.host}:{args.port}")
-    logger.info(f"Webhook endpoint: http://{args.host}:{args.port}/webhook/statuspage")
-    logger.info(f"Health check: http://{args.host}:{args.port}/health")
-    logger.info("=" * 70)
-    logger.info("")
-    logger.info("Configure providers to send webhooks to the endpoint above.")
-    logger.info("This system will receive and process incidents INSTANTLY (event-based).")
-    logger.info("")
-    logger.info(
-        "For local testing: curl -X POST http://localhost:{}/webhook/statuspage -H \"Content-Type: application/json\" -d '{\"incident\":{\"id\":\"local_test\",\"name\":\"Chat Completions API - Elevated Error Rates\",\"status\":\"investigating\",\"updated_at\":\"2025-11-03T14:32:00Z\",\"components\":[{\"name\":\"Chat Completions\"}],\"incident_updates\":[{\"body\":\"Degraded performance due to upstream issue\"}]},\"page\":{\"name\":\"OpenAI API\"}}'"
-        .format(args.port)
-    )
-    logger.info("")
     
     # Run Flask app
     app.run(host=args.host, port=args.port, debug=args.debug)
