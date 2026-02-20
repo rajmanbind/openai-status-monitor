@@ -13,7 +13,6 @@ Architecture:
 Usage:
     python event_monitor.py                    # Start webhook server on port 5000
     python event_monitor.py --port 8000        # Custom port
-    python event_monitor.py --multi            # Multi-provider mode
 
 For 100+ Providers:
     Configure each provider's webhook to point to this server.
@@ -44,7 +43,7 @@ recent_incidents: Dict = {}
 def create_incident_key(incident_id: str, updated_at: str) -> str:
     """
     Create unique key for incident to detect changes.
-    Same approach as status_tracker but for webhook events.
+    Use incident id + updated_at to dedupe webhook events.
     """
     return f"{incident_id}_{updated_at}"
 

@@ -121,18 +121,11 @@ python event_monitor.py --debug
 ## 📁 File Structure
 
 ```
-event_monitor.py         # MAIN - Event-based webhook server (use this!)
-webhook_handler.py       # Alternative webhook implementation
-event_based_client.py    # Client library for event-based monitoring
-requirements.txt         # Dependencies (requests, flask, python-dateutil)
-
-# Legacy/Testing Files (Not recommended for production)
-monitor.py              # OLD polling approach (deprecated)
-openai_status_client.py # Used by monitor.py
-status_tracker.py       # Used by monitor.py
+event_monitor.py   # MAIN - Event-based webhook server (use this)
+requirements.txt   # Dependencies (flask, requests, python-dateutil)
+DEPLOY.md          # Render deployment guide
+POSTMAN_TESTING.md # Postman test steps
 ```
-
-**Use `event_monitor.py` for production!**
 
 ---
 
@@ -170,25 +163,7 @@ curl http://localhost:5000/health
 
 ## 🎓 Why Event-Based?
 
-### ❌ Polling Approach (Old - Not Scalable)
-```python
-while True:
-    data = fetch_from_api()  # Poll every 5 minutes
-    process(data)
-    time.sleep(300)
-
-# Problem: 100 providers = 28,800 API calls/day
-```
-
-### ✅ Event-Based Approach (New - Scalable)
-```python
-@app.route("/webhook/statuspage", methods=["POST"])
-def handle_webhook():
-    data = request.get_json()  # Only when incident occurs
-    process(data)               # Instant!
-    
-# Benefit: 100 providers = 0 polling overhead ✓
-```
+Event-based means the provider pushes updates to your webhook. You do work only when incidents occur, which scales efficiently for 100+ providers.
 
 ---
 
@@ -206,12 +181,7 @@ docker run -p 5000:5000 status-monitor
 ```
 
 ### Cloud (Production)
-Deploy to any platform that supports Flask apps:
-- Heroku
-- AWS EC2
-- Google Cloud Run
-- DigitalOcean
-- Fly.io
+Deploy to Render (recommended). See [DEPLOY.md](DEPLOY.md).
 
 ---
 
