@@ -24,6 +24,7 @@ from datetime import datetime
 import argparse
 from typing import Dict, Set
 import json
+import logging
 
 app = Flask(__name__)
 
@@ -261,6 +262,9 @@ Examples:
     args = parser.parse_args()
     
     
+    # Suppress request access logs so only formatted output is printed
+    logging.getLogger("werkzeug").setLevel(logging.ERROR)
+
     # Run Flask app
     app.run(host=args.host, port=args.port, debug=args.debug)
 
