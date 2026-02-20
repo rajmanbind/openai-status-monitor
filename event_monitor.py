@@ -154,7 +154,7 @@ def handle_statuspage_webhook():
         
         # Output in required format
         output = format_output(incident)
-        print(f"\n{output}\n")
+        print(output, flush=True)
         
         return jsonify({
             "status": "success",
